@@ -117,7 +117,8 @@ impl InfluxExporter for InfluxHttpExporter {
                 }
             }
 
-            self.handle.clear();
+            // state must be maintained by the caller
+            // self.handle.clear();
         } else {
             debug!("no metrics to write");
         }

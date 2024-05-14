@@ -39,7 +39,9 @@ impl InfluxExporter for InfluxFileExporter {
         if count > 0 {
             let mut file = self.file.lock().await;
             file.write_all(metrics.as_bytes())?;
-            self.handle.clear();
+
+            // state must be maintained by the caller
+            // self.handle.clear();
         }
         Ok(())
     }
