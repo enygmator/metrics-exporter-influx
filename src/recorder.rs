@@ -5,7 +5,9 @@ use crate::http::{APIVersion, InfluxHttpExporter};
 use crate::registry::AtomicStorage;
 use crate::BuildError;
 use itertools::Itertools;
-use metrics::{Counter, Gauge, Histogram, Key, KeyName, Label, Recorder, SharedString, Unit};
+use metrics::{
+    Counter, Gauge, Histogram, Key, KeyName, Label, Metadata, Recorder, SharedString, Unit,
+};
 use metrics_util::registry::Registry;
 use quanta::Instant;
 use reqwest::Url;
@@ -116,30 +118,30 @@ impl Drop for InfluxRecorder {
 
 impl Recorder for InfluxRecorder {
     fn describe_counter(&self, _key: KeyName, _unit: Option<Unit>, _description: SharedString) {
-        unimplemented!()
+        // InfluxDB line protocol doesn't seem to havbe native support for units or description
     }
 
     fn describe_gauge(&self, _key: KeyName, _unit: Option<Unit>, _description: SharedString) {
-        unimplemented!()
+        // InfluxDB line protocol doesn't seem to havbe native support for units or description
     }
 
     fn describe_histogram(&self, _key: KeyName, _unit: Option<Unit>, _description: SharedString) {
-        unimplemented!()
+        // InfluxDB line protocol doesn't seem to havbe native support for units or description
     }
 
-    fn register_counter(&self, key: &Key) -> Counter {
+    fn register_counter(&self, key: &Key, _metadata: &Metadata<'_>) -> Counter {
         self.inner
             .registry
             .get_or_create_counter(key, |c| c.to_owned().into())
     }
 
-    fn register_gauge(&self, key: &Key) -> Gauge {
+    fn register_gauge(&self, key: &Key, _metadata: &Metadata<'_>) -> Gauge {
         self.inner
             .registry
             .get_or_create_gauge(key, |c| c.to_owned().into())
     }
 
-    fn register_histogram(&self, key: &Key) -> Histogram {
+    fn register_histogram(&self, key: &Key, _metadata: &Metadata<'_>) -> Histogram {
         self.inner
             .registry
             .get_or_create_histogram(key, |b| b.to_owned().into())

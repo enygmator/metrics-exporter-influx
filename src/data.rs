@@ -103,7 +103,9 @@ impl Display for MetricData {
                 format!("\"{}\"", s.replace('"', r#"\""#))
             }
             Self::Boolean(b) => b.to_string(),
-            Self::Timestamp(t) => t.timestamp_nanos().to_string(),
+            Self::Timestamp(t) => t
+                .timestamp_nanos_opt()
+                .map_or_else(|| "0".to_string(), |n| n.to_string()),
         };
         f.write_str(&s)
     }
